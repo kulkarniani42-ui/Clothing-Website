@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Atélia – Explore Clothing{% endblock %}
+{% block content %}
+<section class="cloth-gallery">
+  <div class="cloth-top">
+    <h2>Explore Clothing</h2>
+    <div class="search-wrapper">
+      <input id="clothingSearch" type="text" placeholder="Search name or colour…">
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </div>
+  </div>
+
+  <div class="filters">
+    <select id="catFilter"><option value="">All Categories</option><option>Shirts</option><option>T-Shirts</option><option>Jeans</option><option>Dresses</option><option>Jackets</option></select>
+    <select id="sizeFilter"><option value="">All Sizes</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option></select>
+    <select id="colourFilter"><option value="">All Colours</option><option>Black</option><option>White</option><option>Navy</option><option>Red</option><option>Green</option></select>
+    <select id="priceFilter"><option value="">Any Price</option><option value="0-999">Under ₹999</option><option value="1000-1999">₹1 000 – ₹1 999</option><option value="2000-4999">₹2 000 – ₹4 999</option><option value="5000+">₹5 000+</option></select>
+  </div>
+
+  <div id="clothingGrid"></div>
+  <div id="noResults" style="display:none;"><h3>No items match your filters</h3></div>
+</section>
+{% endblock %}

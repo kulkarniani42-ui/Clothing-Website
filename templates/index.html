@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Home – Atélia{% endblock %}
+{% block content %}
+<section class="hero">
+  <img src="{{ url_for('static', filename='img/avatar.jpg') }}" alt="avatar"/>
+
+  <!--  TYPEWRITER TITLE  -->
+  <h1 class="typewriter">Hi, Welcome to Atélia</h1>
+
+  <p class="tagline mt-1">Quality · Style · Comfort · Durability</p>
+<div class="btn-row mt-3">
+  <a href="{{ url_for('experience') }}" class="btn">Explore all types of Clothing</a>
+</div>
+</section>  
+
+<!--  TYPING + CURSOR  -->
+<style>
+.typewriter{
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  background: var(--accent);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 3px solid #667eea;
+
+  animation: typing 2.5s steps(32, end) forwards, blink 0.6s step-end infinite;
+}
+@keyframes typing{to{width: 100%;}}
+@keyframes blink{50%{border-color: transparent;}}
+</style>
+{% endblock %}
