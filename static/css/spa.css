@@ -403,6 +403,28 @@ ol {
   margin-top: 2rem;
 }
 
+/* Animation classes from Animate.css subset */
+.animate__animated {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+
+.animate__fadeInUp {
+  animation-name: fadeInUp;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 .cloth-card {
   background: var(--card);
   border: 1px solid var(--border);
@@ -411,13 +433,15 @@ ol {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform .25s, box-shadow .25s;
+  transition: transform .4s cubic-bezier(0.175, 0.885, 0.32, 1.27), box-shadow .4s, border-color 0.3s;
+  will-change: transform;
 }
 
 .cloth-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 15px 30px rgba(0, 255, 65, 0.3);
   border-color: var(--accent);
+  z-index: 10;
 }
 
 .cloth-card img {
@@ -425,6 +449,12 @@ ol {
   height: 200px;
   object-fit: cover;
   border-bottom: 1px solid var(--border);
+  transition: transform 0.5s ease;
+}
+
+.cloth-card:hover img {
+  transform: scale(1.08);
+  /* Zoom effect */
 }
 
 .cloth-info {

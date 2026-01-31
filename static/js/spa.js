@@ -1,6 +1,20 @@
 // ---------- tiny spa router ----------
 const main = document.getElementById('spa-root');
 
+/* ---- catalogue (Global) ---- */
+const catalogue = [
+  {id:1,name:"Slim Oxford Shirt",  cat:"Shirts",  size:"M",  colour:"White",price:1299,img:"https://images.unsplash.com/photo-1596755024233-f90de3a54648?auto=format&fit=crop&w=600&q=80"},
+  {id:2,name:"Denim Trucker",      cat:"Jackets", size:"L",  colour:"Navy", price:3499,img:"https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&w=600&q=80"},
+  {id:3,name:"Cotton Crew Tee",    cat:"T-Shirts",size:"S",  colour:"Black",price:599, img:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80"},
+  {id:4,name:"Skinny High-Rise",   cat:"Jeans",   size:"XS", colour:"Black",price:2199,img:"https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=600&q=80"},
+  {id:5,name:"Floral Summer Dress",cat:"Dresses", size:"M",  colour:"Red",  price:2799,img:"https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=600&q=80"},
+  {id:6,name:"Linen Blend Shirt",  cat:"Shirts",  size:"XL", colour:"Green",price:1599,img:"https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=600&q=80"},
+  {id:7,name:"V-Neck Pullover",    cat:"Jackets", size:"L",  colour:"White",price:3299,img:"https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=600&q=80"},
+  {id:8,name:"Vintage Straight",   cat:"Jeans",   size:"M",  colour:"Navy", price:2399,img:"https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=600&q=80"},
+  {id:9,name:"Striped Polo",       cat:"T-Shirts",size:"L",  colour:"Navy", price:899, img:"https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?auto=format&fit=crop&w=600&q=80"},
+  {id:10,name:"Evening Maxi",      cat:"Dresses", size:"S",  colour:"Black",price:4999,img:"https://images.unsplash.com/photo-1566479179817-c0b5b4b4b1e5?auto=format&fit=crop&w=600&q=80"},
+];
+
 document.addEventListener('click', e => {
   const link = e.target.closest('a[data-link]');
   if (!link) return;
@@ -11,15 +25,25 @@ document.addEventListener('click', e => {
 async function navigate(url){
   main.classList.add('spa-out');
   await delay(300);
-  const html = await (await fetch(url)).text();
-  const newMain = new DOMParser().parseFromString(html, 'text/html').querySelector('#spa-root').innerHTML;
+  const res = await fetch(url);
+  const html = await res.text();
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  
+  const newMain = doc.querySelector('#spa-root').innerHTML;
   main.innerHTML = newMain;
+  document.title = doc.title;
+  
+  window.history.pushState(null, null, url);
   main.classList.remove('spa-out');
   main.classList.add('spa-in');
-  window.history.pushState(null, null, url);
-  document.title = new DOMParser().parseFromString(html, 'text/html').title;
+  
+  router(); // Run logic for new page
 }
-window.addEventListener('popstate', () => navigate(location.pathname));
+
+window.addEventListener('popstate', () => {
+    navigate(location.pathname);
+});
 
 function delay(ms){ return new Promise(r => setTimeout(r, ms)); }
 
@@ -49,6 +73,19 @@ hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
 // ----- footer year -----
 document.getElementById('year').textContent = new Date().getFullYear();
 
+// ----- ROUTER -----
+function router() {
+    const path = location.pathname;
+    if (path === '/experience') {
+        initClothingGallery();
+    } else if (path.startsWith('/product/')) {
+        const container = document.getElementById('product-container');
+        if (container) {
+            initProductPage(parseInt(container.getAttribute('data-id')));
+        }
+    }
+}
+
 /* ===== EXPERIENCE-PAGE ONLY : CLOTHING GALLERY ===== */
 function initClothingGallery(){
   const grid        = document.getElementById('clothingGrid');
@@ -58,20 +95,6 @@ function initClothingGallery(){
   const colourF     = document.getElementById('colourFilter');
   const priceF      = document.getElementById('priceFilter');
   const noRes       = document.getElementById('noResults');
-
-  /* ---- catalogue ---- */
-  const catalogue = [
-    {id:1,name:"Slim Oxford Shirt",  cat:"Shirts",  size:"M",  colour:"White",price:1299,img:"https://images.unsplash.com/photo-1596755024233-f90de3a54648?auto=format&fit=crop&w=600&q=80"},
-    {id:2,name:"Denim Trucker",      cat:"Jackets", size:"L",  colour:"Navy", price:3499,img:"https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&w=600&q=80"},
-    {id:3,name:"Cotton Crew Tee",    cat:"T-Shirts",size:"S",  colour:"Black",price:599, img:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80"},
-    {id:4,name:"Skinny High-Rise",   cat:"Jeans",   size:"XS", colour:"Black",price:2199,img:"https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=600&q=80"},
-    {id:5,name:"Floral Summer Dress",cat:"Dresses", size:"M",  colour:"Red",  price:2799,img:"https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=600&q=80"},
-    {id:6,name:"Linen Blend Shirt",  cat:"Shirts",  size:"XL", colour:"Green",price:1599,img:"https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=600&q=80"},
-    {id:7,name:"V-Neck Pullover",    cat:"Jackets", size:"L",  colour:"White",price:3299,img:"https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=600&q=80"},
-    {id:8,name:"Vintage Straight",   cat:"Jeans",   size:"M",  colour:"Navy", price:2399,img:"https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=600&q=80"},
-    {id:9,name:"Striped Polo",       cat:"T-Shirts",size:"L",  colour:"Navy", price:899, img:"https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?auto=format&fit=crop&w=600&q=80"},
-    {id:10,name:"Evening Maxi",      cat:"Dresses", size:"S",  colour:"Black",price:4999,img:"https://images.unsplash.com/photo-1566479179817-c0b5b4b4b1e5?auto=format&fit=crop&w=600&q=80"},
-  ];
 
   let filtered = [...catalogue];
 
@@ -84,8 +107,12 @@ function initClothingGallery(){
       const card = document.createElement('div');
       card.className = 'cloth-card animate__animated animate__fadeInUp';
       card.style.animationDelay = `${i*60}ms`;
+      // We wrap the image in a link and handle click
+      // Also add 'data-link' to use SPA router
       card.innerHTML = `
-        <img src="${p.img}" alt="${p.name}">
+        <a href="/product/${p.id}" data-link style="display:block; cursor: pointer;">
+            <img src="${p.img}" alt="${p.name}">
+        </a>
         <div class="cloth-info">
           <h4>${p.name}</h4>
           <span class="meta">${p.cat} • Size ${p.size} • ${p.colour}</span>
@@ -125,16 +152,85 @@ function initClothingGallery(){
   }
 }
 
-/* cart ripple */
+/* ===== PRODUCT PAGE : 3D View ===== */
+function initProductPage(id) {
+    const product = catalogue.find(p => p.id === id);
+    if (!product) return;
+
+    // Set Text
+    const nameEl = document.getElementById('p-name');
+    const metaEl = document.getElementById('p-meta');
+    const priceEl = document.getElementById('p-price');
+    const addBtn = document.getElementById('p-add');
+
+    if(nameEl) nameEl.textContent = product.name;
+    if(metaEl) metaEl.textContent = `${product.cat} • Size ${product.size} • ${product.colour}`;
+    if(priceEl) priceEl.textContent = `₹${product.price}`;
+    if(addBtn) {
+        addBtn.onclick = () => {
+            addBtn.textContent = 'Added ✓';
+            setTimeout(() => addBtn.textContent = 'Add to Cart', 1200);
+        };
+    }
+
+    // Three.js
+    const container = document.getElementById('three-canvas-container');
+    if (!container) return;
+    
+    container.innerHTML = ''; // clear loading
+
+    // If THREE is not loaded yet (CDN delay), wait.
+    if (typeof THREE === 'undefined') {
+        setTimeout(() => initProductPage(id), 100);
+        return;
+    }
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050505); // Match card bg
+
+    const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+    camera.position.z = 2.5;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    scene.add(ambientLight);
+
+    const pointLight = new THREE.PointLight(0xffffff, 0.5);
+    pointLight.position.set(5, 5, 5);
+    scene.add(pointLight);
+
+    const loader = new THREE.TextureLoader();
+    loader.load(product.img, (texture) => {
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
+        const material = new THREE.MeshStandardMaterial({ map: texture });
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+
+        function animate() {
+            if(!document.getElementById('three-canvas-container')) return; // Stop if navigated away
+            requestAnimationFrame(animate);
+            cube.rotation.x += 0.005;
+            cube.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+        animate();
+    });
+}
+
 function addToCart(id){
+    // Stop propagation handled by layout? NO.
+    // The link wraps the image. The button is sibling. safe.
   const btn = event.currentTarget;
   btn.innerHTML = 'Added ✓';
   setTimeout(()=>btn.innerHTML='Add to Cart',1200);
 }
 
-/* run only when we are on /experience */
+/* run router on load */
 document.addEventListener('DOMContentLoaded',()=>{
-  if(location.pathname==='/experience') initClothingGallery();
+  router();
 });
 const nav = document.querySelector('.navbar');
 document.documentElement.style.setProperty('--navbar-height', nav.offsetHeight + 'px');
